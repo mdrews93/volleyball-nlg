@@ -41,6 +41,8 @@ def main():
         except Exception as err:
             errors += 1
             print("Error processing link {}: {}".format(base_url+game_id, err))
+            del gamelinks[idx]
+    pickle.dump(gamelinks, open("gamelinks.p", "wb"))
 
     print("Completed processing raw counts. {} errors out of {} links".format(errors, len(gamelinks)))
 
@@ -57,8 +59,6 @@ def main():
 
     print("Script completed at {}".format(datetime.datetime.now()))
     print("Total runtime: {} seconds".format(round(time.time() - start_time, 2)))
-
-
 
 
 def retrieve_set_results(soup):
@@ -180,21 +180,19 @@ def retrieve_sets(soup, number_of_sets):
 def update_dicts(raw_counts_dict, diff_dict, sets, set_results, url):
     for set_num, set in enumerate(sets):
         for left_point, right_point in set:
-            raw_counts_dict[left_point][right_point][set_results["left"][set_num]] += 1
-            raw_counts_dict[right_point][left_point][set_results["right"][set_num]] += 1
-
             if left_point>25 and left_point-right_point>2 or right_point>25 and right_point-left_point>2:
                 print("{} to {} at {}".format(left_point, right_point, url))
+                continue
             if left_point-right_point > 9 and set_results["left"][set_num] == "L":
                 print("{} to {} and left lost at {}".format(left_point, right_point, url))
             if right_point-left_point > 9 and set_results["right"][set_num] == "L":
                 print("{} to {} and right lost at {}".format(left_point, right_point, url))
 
+            raw_counts_dict[left_point][right_point][set_results["left"][set_num]] += 1
+            raw_counts_dict[right_point][left_point][set_results["right"][set_num]] += 1
+
             diff_dict[left_point - right_point][set_results["left"][set_num]] += 1
             diff_dict[right_point - left_point][set_results["right"][set_num]] += 1
-
-
-
 
 
 def compute_score_percentages(raw_counts_dict):
@@ -220,8 +218,6 @@ def compute_diff_percentages(diff_dict):
         except:
             pass
     return percentage_dict
-
-
 
 
 if __name__ == "__main__":
