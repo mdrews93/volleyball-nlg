@@ -20,7 +20,7 @@ def main():
 
     errors = 0
     victims = []
-    for idx, link in enumerate(gamelinks[0:30]):
+    for idx, link in enumerate(gamelinks):
         game_id = link.split("/")[3]
         try:
             req = Request(base_url + game_id,
@@ -45,10 +45,11 @@ def main():
     for i in sorted(victims, reverse=True):
         del gamelinks[i]
     print("Removed {} links".format(len(victims)))
-    print("Saving updated links list")
-    pickle.dump(gamelinks, open("gamelinks.p", "wb"))
+    if len(victims) > 0:
+        print("Saving updated links list")
+        pickle.dump(gamelinks, open("gamelinks.p", "wb"))
 
-    print("Completed processing raw counts. {} errors out of {} links".format(errors, len(gamelinks)))
+    print("Completed processing raw counts. {} errors out of {} links".format(errors, len(gamelinks)+errors))
 
     percentage_score_dict = compute_score_percentages(raw_counts_dict)
     percentage_diff_dict = compute_diff_percentages(diff_dict)
@@ -204,9 +205,13 @@ def compute_score_percentages(raw_counts_dict):
     for left_point in percentage_dict:
         for right_point in percentage_dict[left_point]:
             try:
-                sum = percentage_dict[left_point][right_point]['W'] + percentage_dict[left_point][right_point]['L']
-                percentage_dict[left_point][right_point]['W'] = round(percentage_dict[left_point][right_point]['W']/sum, 3)
-                percentage_dict[left_point][right_point]['L'] = round(percentage_dict[left_point][right_point]['L']/sum, 3)
+                sum = raw_counts_dict[left_point][right_point]['W'] + raw_counts_dict[left_point][right_point]['L']
+
+                percentage_dict[left_point][right_point]['W'] = round(raw_counts_dict[left_point][right_point]['W']/sum, 3)
+                percentage_dict[left_point][right_point]['W_counts'] = raw_counts_dict[left_point][right_point]['W']
+
+                percentage_dict[left_point][right_point]['L'] = round(raw_counts_dict[left_point][right_point]['L']/sum, 3)
+                percentage_dict[left_point][right_point]['L_counts'] = raw_counts_dict[left_point][right_point]['L']
             except:
                 pass
     return percentage_dict
@@ -216,9 +221,12 @@ def compute_diff_percentages(diff_dict):
     percentage_dict = copy.deepcopy(diff_dict)
     for diff in percentage_dict:
         try:
-            sum = percentage_dict[diff]['W'] + percentage_dict[diff]['L']
-            percentage_dict[diff]['W'] = round(percentage_dict[diff]['W']/sum, 3)
-            percentage_dict[diff]['L'] = round(percentage_dict[diff]['L']/sum, 3)
+            sum = diff_dict[diff]['W'] + diff_dict[diff]['L']
+            percentage_dict[diff]['W'] = round(diff_dict[diff]['W']/sum, 3)
+            percentage_dict[diff]['W_counts'] = diff_dict[diff]['W']
+
+            percentage_dict[diff]['L'] = round(diff_dict[diff]['L']/sum, 3)
+            percentage_dict[diff]['L_counts'] = diff_dict[diff]['L']
         except:
             pass
     return percentage_dict
