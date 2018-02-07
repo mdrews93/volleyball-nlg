@@ -19,7 +19,7 @@ def main():
     diff_dict = create_diff_dict()
 
     errors = 0
-
+    victims = []
     for idx, link in enumerate(gamelinks):
         game_id = link.split("/")[3]
         try:
@@ -41,7 +41,11 @@ def main():
         except Exception as err:
             errors += 1
             print("Error processing link {}: {}".format(base_url+game_id, err))
-            del gamelinks[idx]
+            victims.append(idx)
+    for idx in victims:
+        del gamelinks[idx]
+    print("Removed {} links".format(len(victims)))
+    print("Saving updated links list")
     pickle.dump(gamelinks, open("gamelinks.p", "wb"))
 
     print("Completed processing raw counts. {} errors out of {} links".format(errors, len(gamelinks)))
