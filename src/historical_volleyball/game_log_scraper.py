@@ -20,7 +20,7 @@ def main():
 
     errors = 0
     victims = []
-    for idx, link in enumerate(gamelinks):
+    for idx, link in enumerate(gamelinks[0:30]):
         game_id = link.split("/")[3]
         try:
             req = Request(base_url + game_id,
@@ -42,8 +42,8 @@ def main():
             errors += 1
             print("Error processing link {}: {}".format(base_url+game_id, err))
             victims.append(idx)
-    for idx in victims:
-        del gamelinks[idx]
+    for i in sorted(victims, reverse=True):
+        del gamelinks[i]
     print("Removed {} links".format(len(victims)))
     print("Saving updated links list")
     pickle.dump(gamelinks, open("gamelinks.p", "wb"))
