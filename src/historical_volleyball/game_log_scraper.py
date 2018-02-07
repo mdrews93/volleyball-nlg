@@ -53,9 +53,9 @@ def main():
     percentage_score_dict = compute_score_percentages(raw_counts_dict)
     percentage_diff_dict = compute_diff_percentages(diff_dict)
 
-    # pickle.dump(raw_counts_dict, open("raw_counts_dict.p", "wb"))
-    # pickle.dump(percentage_score_dict, open("percentage_score_dict.p", "wb"))
-    # pickle.dump(percentage_diff_dict, open("percentage_diff_dict.p", "wb"))
+    pickle.dump(raw_counts_dict, open("raw_counts_dict.p", "wb"))
+    pickle.dump(percentage_score_dict, open("percentage_score_dict.p", "wb"))
+    pickle.dump(percentage_diff_dict, open("percentage_diff_dict.p", "wb"))
 
     pp = pprint.PrettyPrinter(indent=4)
     pp.pprint(percentage_score_dict)
