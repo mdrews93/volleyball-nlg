@@ -46,7 +46,7 @@ def main():
             victims.append(idx)
     print("Saving invalid links list")
     pickle.dump(invalid_links, open("invalid_gamelinks.p", "wb"))
-    for i in sorted(victims+invalid_idx, reverse=True):
+    for i in sorted(victims.extend(invalid_idx), reverse=True):
         del gamelinks[i]
 
     print("Removed {} links".format(len(victims) + len(invalid_idx)))
