@@ -20,6 +20,8 @@ def main():
 
     errors = 0
     victims = []
+    invalid_links = set()
+    invalid_idx = set()
     for idx, link in enumerate(gamelinks):
         game_id = link.split("/")[3]
         try:
@@ -35,17 +37,20 @@ def main():
 
             sets = retrieve_sets(soup, number_of_sets)
 
-            update_dicts(raw_counts_dict, diff_dict, sets, set_results, base_url+game_id)
+            update_dicts(raw_counts_dict, diff_dict, sets, set_results, link, invalid_links, invalid_idx, idx)
 
             print("Finished processing game {} out of {} - link: {}".format(idx+1, len(gamelinks), base_url+game_id))
         except Exception as err:
             errors += 1
             print("Error processing link {}: {}".format(base_url+game_id, err))
             victims.append(idx)
-    for i in sorted(victims, reverse=True):
+    print("Saving invalid links list")
+    pickle.dump(invalid_links, open("invalid_gamelinks.p", "wb"))
+    for i in sorted(victims+invalid_idx, reverse=True):
         del gamelinks[i]
-    print("Removed {} links".format(len(victims)))
-    if len(victims) > 0:
+
+    print("Removed {} links".format(len(victims) + len(invalid_idx)))
+    if len(victims)+len(invalid_idx) > 0:
         print("Saving updated links list")
         pickle.dump(gamelinks, open("gamelinks.p", "wb"))
 
@@ -182,16 +187,18 @@ def retrieve_sets(soup, number_of_sets):
     #         break
 
 
-def update_dicts(raw_counts_dict, diff_dict, sets, set_results, url):
+def update_dicts(raw_counts_dict, diff_dict, sets, set_results, link, invalid_links, invalid_idx, idx):
     for set_num, set in enumerate(sets):
         for left_point, right_point in set:
             if left_point>25 and left_point-right_point>2 or right_point>25 and right_point-left_point>2:
-                print("{} to {} at {}".format(left_point, right_point, url))
-                continue
+                print("{} to {} at {}".format(left_point, right_point, link))
+                invalid_idx.add(idx)
+                invalid_links.add(link)
+                return
             if left_point-right_point > 9 and set_results["left"][set_num] == "L":
-                print("{} to {} and left lost at {}".format(left_point, right_point, url))
+                print("{} to {} and left lost at {}".format(left_point, right_point, link))
             if right_point-left_point > 9 and set_results["right"][set_num] == "L":
-                print("{} to {} and right lost at {}".format(left_point, right_point, url))
+                print("{} to {} and right lost at {}".format(left_point, right_point, link))
 
             raw_counts_dict[left_point][right_point][set_results["left"][set_num]] += 1
             raw_counts_dict[right_point][left_point][set_results["right"][set_num]] += 1
