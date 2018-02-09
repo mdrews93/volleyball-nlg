@@ -44,9 +44,13 @@ def main():
             errors += 1
             print("Error processing link {}: {}".format(base_url+game_id, err))
             victims.append(idx)
-    print("Saving invalid links list with {} links".format(len(invalid_links)))
-    pickle.dump(invalid_links, open("invalid_gamelinks.p", "wb"))
-    for i in sorted(victims.extend(invalid_idx), reverse=True):
+
+    if len(invalid_links) > 0:
+        print("Saving invalid links list with {} links".format(len(invalid_links)))
+        pickle.dump(invalid_links, open("invalid_gamelinks.p", "wb"))
+
+    victims.extend(invalid_idx)
+    for i in sorted(victims, reverse=True):
         del gamelinks[i]
 
     print("Removed {} links".format(len(victims)))
