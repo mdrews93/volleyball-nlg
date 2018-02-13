@@ -42,18 +42,19 @@ def update_wpas(player_to_wpa, point, iit_ids):
         player = point.server
     elif "Service ace" in point.summary:
         player = point.server
-    elif "block error" in point.summary:
-        if point.winner not in iit_ids:
+    # elif "block error" in point.summary:
+    elif "Kill by" in point.summary:
+        if point.winner not in iit_ids and "error by" in point.summary:
             player = point.summary.split("error by ")[1].split(". ")[0]
-    elif "Kill by" in point.summary and point.winner in iit_ids:
-        if "(from" in point.summary:
-            hitter = point.summary.split("Kill by ")[1].split(" (")[0]
-            setter = point.summary.split("(from ")[1].split(")")[0]
-            player_to_wpa[hitter] += wpa*(4/5)
-            player_to_wpa[setter] += wpa*(1/5)
-            return
-        else:
-            player = point.summary.split("Kill by ")[1].split(". ")[0]
+        elif point.winner in iit_ids:
+            if "(from" in point.summary:
+                hitter = point.summary.split("Kill by ")[1].split(" (")[0]
+                setter = point.summary.split("(from ")[1].split(")")[0]
+                player_to_wpa[hitter] += wpa * (4 / 5)
+                player_to_wpa[setter] += wpa * (1 / 5)
+                return
+            else:
+                player = point.summary.split("Kill by ")[1].split(". ")[0]
     elif "Attack error" in point.summary:
         if point.winner not in iit_ids:
             if "). " not in point.summary:
@@ -70,8 +71,6 @@ def update_wpas(player_to_wpa, point, iit_ids):
 
     if player:
         player_to_wpa[player.lstrip()] += wpa
-
-
 
 
 def get_wpa(before_score, after_score):
@@ -155,8 +154,6 @@ def get_play_logs(game_links, base_url):
                 pass
 
     return points, iit_ids, iit_players
-
-
 
 
 if __name__ == "__main__":

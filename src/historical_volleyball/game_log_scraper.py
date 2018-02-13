@@ -194,8 +194,13 @@ def retrieve_sets(soup, number_of_sets):
 def update_dicts(raw_counts_dict, diff_dict, sets, set_results, link, invalid_links, invalid_idx, idx):
     for set_num, set in enumerate(sets):
         for left_point, right_point in set:
-            if left_point>25 and left_point-right_point>2 or right_point>25 and right_point-left_point>2:
-                print("{} to {} at {}".format(left_point, right_point, link))
+            if left_point>=25 and left_point-right_point>=2 and set_results["left"][set_num] == "L" \
+                    or right_point>=25 and right_point-left_point>=2 and set_results["right"][set_num] == "L":
+                print("{} to {} at {} and left:{}, right:{}".format(left_point,
+                                                                    right_point,
+                                                                    link,
+                                                                    set_results["left"][set_num],
+                                                                    set_results["right"][set_num]))
                 invalid_idx.add(idx)
                 invalid_links.add(link)
                 return
