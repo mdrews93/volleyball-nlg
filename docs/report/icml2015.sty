@@ -81,27 +81,6 @@
   \gdef\nohyperref{1}
 }
 
-\ifdefined\nohyperref\else\ifdefined\hypersetup
-  \definecolor{mydarkblue}{rgb}{0,0.08,0.45}
-  \hypersetup{ %
-    pdftitle={},
-    pdfauthor={},
-    pdfsubject={Proceedings of the International Conference on Machine Learning 2015},
-    pdfkeywords={},
-    pdfborder=0 0 0,
-    pdfpagemode=UseNone,
-    colorlinks=true,
-    linkcolor=mydarkblue,
-    citecolor=mydarkblue,
-    filecolor=mydarkblue,
-    urlcolor=mydarkblue,
-    pdfview=FitH}
-
-  \ifdefined\isaccepted \else
-    \hypersetup{pdfauthor={Anonymous Submission}}
-  \fi
-\fi\fi
-
 %%%%%%%%%%%%%%%%%%%%
 % This string is printed at the bottom of the page for the
 % final/accepted version of the ``appearing in'' note.  Modify it to
@@ -385,13 +364,13 @@ International Conference on Machine Learning (ICML).  Do not distribute.}
 \setcitestyle{authoryear,round,citesep={;},aysep={,},yysep={;}}
 
 % Redefinition of the abstract environment. 
-\renewenvironment{abstract}
-   {%
+%\renewenvironment{abstract}
+%   {%
 % Insert the ``appearing in'' copyright notice.
-\@copyrightspace
-\centerline{\large\bf Abstract}
-    \vspace{-0.12in}\begin{quote}}
-   {\par\end{quote}\vskip 0.12in}
+%\@copyrightspace
+%\centerline{\large\bf Abstract}
+%    \vspace{-0.12in}\begin{quote}}
+%   {\par\end{quote}\vskip 0.12in}
 
 % numbered section headings with different treatment of numbers
 

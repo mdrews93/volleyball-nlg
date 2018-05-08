@@ -1,1 +1,1 @@
-Put presnetation here.
+This directory contains the final presentation in PDF format.

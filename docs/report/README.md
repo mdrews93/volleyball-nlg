@@ -1,1 +1,1 @@
-Use LaTeX to write your report. See example_paper.tex.
+This directory contains the final report.
